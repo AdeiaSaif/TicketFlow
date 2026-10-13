@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: ${{secrets.DB_PASSWORD}}
+      POSTGRES_USER: ${{secrets.USER}}
+      POSTGRES_DB: TicketFlow
+    ports:
+      - "5435:5432"
+      
