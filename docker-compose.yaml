@@ -7,8 +7,8 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${{secret.DB_PASSWORD}}
+      POSTGRES_USER: ${{secret.USER}}
       POSTGRES_DB: TicketFlow
     ports:
       - "5435:5432"
