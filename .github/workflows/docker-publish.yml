@@ -28,4 +28,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: adeia/ticketflow:latest
+          tags: adeia/ticketflow:latest 

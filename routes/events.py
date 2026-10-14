@@ -1,3 +1,7 @@
+from database.database import get_redis
+import redis
+import json
+from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter,Depends,HTTPException, status
 from database.database import get_db
 from auth2 import get_current_user
@@ -19,9 +23,7 @@ def create_events(events:Events,db:Session=Depends(get_db),user:int=Depends(get_
         db.refresh(new_event)
         return {"event_title":events.title,"organizer_id":user}
     else:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-            detail="You do not have permission to create events."
-        )
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="You do not have permission to create events." )
 
 @router.put("/update/{id}")
 def update_event(event:Events_Update,id:int,db:Session=Depends(get_db),user:int=Depends(get_current_user)):
@@ -54,16 +56,34 @@ def update_event(id:int,db:Session=Depends(get_db),user:int=Depends(get_current_
                 detail="You do not have permission to delete events."
             )
 
-
 @router.get("/mine")
-def create_events(db:Session=Depends(get_db),user:int=Depends(get_current_user)):
-    my_events=db.query(models.Events).filter(models.Events.org_id==user.id).all()
-    return my_events
+def create_events(r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db),user:int=Depends(get_current_user)):
+    cache_key = f"user_events:{user.id}"
+    events_cache = r.get(cache_key)
+    if events_cache:
+        return {"data": json.loads(events_cache)}
+    my_events = db.query(models.Events).filter(models.Events.org_id == user.id).all()
+    events_data = jsonable_encoder(my_events)
+    r.setex(cache_key, 300, json.dumps(events_data))
+    return {"data": my_events}
 @router.get("/search")
-def create_events(city:Optional[str]="",category:Optional[str]="",db:Session=Depends(get_db)):
+def create_events(city:Optional[str]="",category:Optional[str]="",r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db)):
+    cache_key = f"events_search:{city}:{category}"
+    events_cache = r.get(cache_key)
+    if events_cache:
+        return {"data": json.loads(events_cache)}
     my_events=db.query(models.Events).filter(models.Events.city.contains(city)).filter(models.Events.category.contains(category)).all()
-    return my_events
+    events_data = jsonable_encoder(my_events)
+    r.setex(cache_key, 300, json.dumps(events_data))
+    return {"data": my_events}
+
 @router.get("/{id}")
-def create_events(id:int,db:Session=Depends(get_db)):
+def create_events(id:int,r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db)):
+    cache_key = f"event_detail:{id}"
+    events_cache = r.get(cache_key)
+    if events_cache:
+        return {"data": json.loads(events_cache)}
     my_events=db.query(models.Events).filter(models.Events.id==id).all()
-    return my_events
+    events_data = jsonable_encoder(my_events)
+    r.setex(cache_key, 300, json.dumps(events_data))
+    return {"data": my_events}
