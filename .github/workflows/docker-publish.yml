@@ -28,4 +28,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+<<<<<<<< HEAD:.github/workflows/docker-publish.yml
           tags: adeia/ticketflow:latest 
+========
+          tags: adeia/ticketflow:latest
+>>>>>>>> 8d8e40cdb6e0b15884723de6aacb4fd3ebd58282:.github/workflows/main.yml
