@@ -12,7 +12,6 @@ services:
     env_file:
       - .env
     environment:
-      # Inside Docker, services talk via service names, not localhost
       DATABASE_URL: postgresql://postgres:admin123@db:5432/ticketflow
       REDIS_URL: redis://redis:6379/0
     depends_on:
