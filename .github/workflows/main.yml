@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
+      - name: Run Pytest
+        run: pytest -v -s
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
