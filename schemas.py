@@ -15,6 +15,7 @@ class Setting(BaseSettings):
     ALGORITHM:str
     DATABASE_URL:str
     REDIS_URL: str
+    MISTRAL_API_KEY:str
     class Config:
         env_file=".env"
 settings = Setting()
@@ -99,3 +100,8 @@ class BookingItemCreate(BaseModel):
 class BookingCreate(BaseModel):
     event_id: int
     items: List[BookingItemCreate]
+class AskRequest(BaseModel):
+    question: str
+class AskResponse(BaseModel):
+    answer: str
+    sources: list[int]
