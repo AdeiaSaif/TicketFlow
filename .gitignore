@@ -9,3 +9,6 @@ __pycache__/
 venv/
 .venv/
 env/
+
+# Vector DB
+chroma_db/

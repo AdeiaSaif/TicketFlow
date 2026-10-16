@@ -5,6 +5,7 @@ from routes.events import router as events_router
 from routes.booking import router as booking_router
 from routes.payment import router as payment_router
 from routes.report import router as report_router
+from routes.assistant import router as assistant_router
 from database.database import engine,Base
 
 
@@ -17,7 +18,9 @@ app.include_router(tickettype_router)
 app.include_router(booking_router)
 app.include_router(payment_router)
 app.include_router(report_router)
+app.include_router(assistant_router)
 
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
