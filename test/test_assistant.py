@@ -6,7 +6,6 @@ client = TestClient(app)
 
 
 def test_ask_returns_answer_and_sources(monkeypatch):
-    # Mistral API ko call kiye baghair fake jawab
     def fake_generate_text(question):
         return {"answer": "Refunds take 5 to 7 working days.", "sources": [3]}
 
