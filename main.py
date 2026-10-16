@@ -19,3 +19,8 @@ app.include_router(booking_router)
 app.include_router(payment_router)
 app.include_router(report_router)
 app.include_router(assistant_router)
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+

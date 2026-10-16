@@ -14,4 +14,8 @@ app.dependency_overrides[get_current_user] = override_get_current_user
 def test_register_user():
     response = client.get("/getuser")
     assert "data" in response.json()
-    
+
+def test_health_check():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
