@@ -3,9 +3,9 @@ import redis
 import json
 from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter,Depends,HTTPException, status
-from database.database import get_db
 from auth2 import get_current_user
 from schemas import Events,Events_Update
+from database.database import get_db
 from sqlalchemy.orm import Session
 from typing import Optional
 import database.models as models
@@ -57,7 +57,7 @@ def update_event(id:int,db:Session=Depends(get_db),user:int=Depends(get_current_
             )
 
 @router.get("/mine")
-def create_events(r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db),user:int=Depends(get_current_user)):
+def get_my_events(r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db),user:int=Depends(get_current_user)):
     cache_key = f"user_events:{user.id}"
     events_cache = r.get(cache_key)
     if events_cache:
@@ -67,7 +67,7 @@ def create_events(r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db),us
     r.setex(cache_key, 300, json.dumps(events_data))
     return {"data": my_events}
 @router.get("/search")
-def create_events(city:Optional[str]="",category:Optional[str]="",r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db)):
+def saerch_event(city:Optional[str]="",category:Optional[str]="",r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db)):
     cache_key = f"events_search:{city}:{category}"
     events_cache = r.get(cache_key)
     if events_cache:
@@ -78,7 +78,7 @@ def create_events(city:Optional[str]="",category:Optional[str]="",r:redis.Redis=
     return {"data": my_events}
 
 @router.get("/{id}")
-def create_events(id:int,r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db)):
+def get_events(id:int,r:redis.Redis=Depends(get_redis),db:Session=Depends(get_db)):
     cache_key = f"event_detail:{id}"
     events_cache = r.get(cache_key)
     if events_cache:

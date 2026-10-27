@@ -16,8 +16,8 @@ fastapi-cli==0.0.32
 redis
 h11==0.16.0
 httpcore==1.0.9
-httptools==0.9.0
 httpx==0.28.1
+httptools==0.9.0
 idna==3.20
 numpy==2.5.4
 itsdangerous==2.2.0
@@ -61,3 +61,5 @@ langchain-core==1.6.11
 langchain-text-splitters==1.1.3
 mistralai==3.2.0
 pypdf==6.21.0
+langgraph
+langchain-google-genai
