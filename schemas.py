@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel,EmailStr
+from pydantic import BaseModel,EmailStr,Field
 from datetime import datetime
 from typing import Optional,List
 from pydantic_settings import BaseSettings
@@ -16,6 +16,7 @@ class Setting(BaseSettings):
     DATABASE_URL:str
     REDIS_URL: str
     MISTRAL_API_KEY:str
+    GEMINI_API_KEY:str
     class Config:
         env_file=".env"
 settings = Setting()
@@ -51,7 +52,7 @@ class TicketType_update(BaseModel):
     price :Optional[int] =None
     total_seats :Optional[int]=None
     available_seats :Optional[int]=None
-class Booking(BaseModel):
+class Booking(BaseModel):   
     event_id :int
     booking_status :str
     total_amount :int
@@ -82,7 +83,7 @@ class PaymentResponse(BaseModel):
 
 class BookingItemCreate(BaseModel):
     ticket_type_id: int
-    quantity: int
+    quantity: int= Field(gt=0)
 
 class BookingItemResponse(BaseModel):
     id: int
@@ -95,7 +96,8 @@ class BookingItemResponse(BaseModel):
 
 class BookingItemCreate(BaseModel):
     ticket_type_id: int
-    quantity: int
+    quantity: int= Field(gt=0)
+
 
 class BookingCreate(BaseModel):
     event_id: int
