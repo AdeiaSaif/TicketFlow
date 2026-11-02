@@ -10,18 +10,31 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 router=APIRouter()
 @router.post("/Signup")
-def user_registration(user_data:User,db:Session=Depends(get_db)):
+def user_registration(user_data: User, db: Session = Depends(get_db)):
+    existing_user = db.query(models.Users).filter(
+        models.Users.email == user_data.email
+    ).first()
+
+    if existing_user:
+        raise HTTPException(
+            status_code=400,
+            detail="This email is already registered. Please login."
+        )
+
     hashed_password = hashed(user_data.password)
+
     new_user = models.Users(
         name=user_data.name,
         email=user_data.email,
         password=hashed_password,
         role=user_data.role
     )
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return {'data':user_data}
+
+    return {"message": "Registration successful"}
 
 @router.post("/Signin")
 def user_login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
